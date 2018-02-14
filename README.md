@@ -1,2 +1,2 @@
 # attitude_control
-Attitude controller that emulates the pixhawk.
+Collection of packages that emulate various Pixhawk modules.
