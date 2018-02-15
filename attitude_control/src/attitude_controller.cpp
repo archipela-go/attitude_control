@@ -1,5 +1,6 @@
 #include <ros/ros.h>
 #include <mavros_msgs/AttitudeTarget.h>
+#include <Eigen/Geometry>
 
 using namespace std;
 
