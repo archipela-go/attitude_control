@@ -47,7 +47,6 @@ void Node::setpoint_cb(const mavros_msgs::AttitudeTarget::ConstPtr &msg)
 
 
 int main(int argc, char** argv) {
-
   ros::init(argc, argv, "attitude_controller");
   ros::NodeHandle pnh("~");
   attitude_controller::Node node(pnh);
