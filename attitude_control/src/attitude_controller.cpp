@@ -1,6 +1,7 @@
 #include <ros/ros.h>
-#include <mavros_msgs/AttitudeTarget.h>
 #include <Eigen/Geometry>
+#include <mavros_msgs/AttitudeTarget.h>
+#include <sensor_msgs/Imu.h>
 
 using namespace std;
 
@@ -10,21 +11,32 @@ class Node {
  public:
   explicit Node(const ros::NodeHandle& pnh);
   void setpoint_cb(const mavros_msgs::AttitudeTarget::ConstPtr& msg);
+  void imu_cb(const sensor_msgs::Imu::ConstPtr& msg);
 
  private:
   ros::NodeHandle pnh_;
   ros::Subscriber setpoint_sub;
+  ros::Time last_setpoint_time_;
+  mavros_msgs::AttitudeTarget last_setpoint_;
+  ros::Subscriber imu_sub;
 };
 
 Node::Node(const ros::NodeHandle& pnh) : pnh_(pnh) {
+  setpoint_sub = pnh_.subscribe("/attitude_target", 10, &Node::setpoint_cb, this);
+  imu_sub = pnh_.subscribe("/imu/data", 10, &Node::imu_cb, this);
+  ROS_INFO("init attitude_controller");
+}
 
-    setpoint_sub = pnh_.subscribe("/attitude_target", 10, &Node::setpoint_cb, this);
-    ROS_INFO("init attitude_controller");
+void Node::imu_cb(const sensor_msgs::Imu::ConstPtr &msg)
+{
+  ROS_INFO("imu recieved");
 }
 
 void Node::setpoint_cb(const mavros_msgs::AttitudeTarget::ConstPtr &msg)
 {
   ROS_INFO("setpoint recieved");
+  last_setpoint_ = *msg;
+  last_setpoint_time_ = ros::Time::now();
 }
 
 }  // namespace attitude_controller
