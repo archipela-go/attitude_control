@@ -12,6 +12,8 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   roscpp
   std_msgs
+  kingfisher_msgs
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -107,7 +109,7 @@ find_package(Eigen3 REQUIRED)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES attitude_control
-  CATKIN_DEPENDS mavros_msgs roscpp rospy std_msgs sensor_msgs
+  CATKIN_DEPENDS mavros_msgs roscpp rospy std_msgs sensor_msgs tf kingfisher_msgs
   DEPENDS Eigen3
 )
 
