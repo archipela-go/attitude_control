@@ -41,7 +41,7 @@ class Node {
 };
 
 Node::Node(const ros::NodeHandle& pnh) : pnh_(pnh) {
-  setpoint_sub_ = pnh_.subscribe("att_control/attitude_target", 10, &Node::setpoint_cb, this);
+  setpoint_sub_ = pnh_.subscribe("/att_control/attitude_target", 10, &Node::setpoint_cb, this);
   imu_sub_ = pnh_.subscribe("/mavros/imu/data", 10, &Node::imu_cb, this);
   drive_pub_ = pnh_.advertise<kingfisher_msgs::Drive>("/cmd_drive", 10);
   actuator_pub_ = pnh_.advertise<mavros_msgs::ActuatorControl>("/mavros/actuator_control", 10);
