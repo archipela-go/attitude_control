@@ -1,6 +1,7 @@
 #include <ros/ros.h>
 #include <Eigen/Geometry>
 #include <mavros_msgs/AttitudeTarget.h>
+#include <mavros_msgs/ActuatorControl.h>
 #include <kingfisher_msgs/Drive.h>
 #include <sensor_msgs/Imu.h>
 #include <tf/transform_datatypes.h>
@@ -26,6 +27,7 @@ class Node {
   bool setpoint_set_;
 
   ros::Publisher drive_pub_;
+  ros::Publisher actuator_pub_;
 
   ros::Subscriber imu_sub_;
   Eigen::Quaterniond imu_q_;
@@ -39,9 +41,10 @@ class Node {
 };
 
 Node::Node(const ros::NodeHandle& pnh) : pnh_(pnh) {
-  setpoint_sub_ = pnh_.subscribe("/attitude_target", 10, &Node::setpoint_cb, this);
-  imu_sub_ = pnh_.subscribe("/imu/data", 10, &Node::imu_cb, this);
+  setpoint_sub_ = pnh_.subscribe("att_control/attitude_target", 10, &Node::setpoint_cb, this);
+  imu_sub_ = pnh_.subscribe("/mavros/imu/data", 10, &Node::imu_cb, this);
   drive_pub_ = pnh_.advertise<kingfisher_msgs::Drive>("/cmd_drive", 10);
+  actuator_pub_ = pnh_.advertise<mavros_msgs::ActuatorControl>("/mavros/actuator_control", 10);
 
   setpoint_set_ = false;
 
@@ -112,6 +115,19 @@ void Node::imu_cb(const sensor_msgs::Imu::ConstPtr &msg)
     drive_msg->right = right;
 
     drive_pub_.publish(drive_msg);
+
+    // create array for publishing
+
+    float controls[] = {0, 1, 2, 3, 4, 5, 6, 7};
+
+    // publish actuator control
+    auto control_msg = boost::make_shared<mavros_msgs::ActuatorControl>();
+    control_msg->group_mix = 0;
+    control_msg->header.stamp = ros::Time::now();
+    control_msg->controls[1] = throttle;
+    control_msg->controls[2] = yaw_effort;
+
+    actuator_pub_.publish(control_msg);
   }
 }
 
