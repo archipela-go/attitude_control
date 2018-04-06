@@ -105,7 +105,7 @@ void Node::imu_cb(const sensor_msgs::Imu::ConstPtr &msg)
     left = std::min(1.0, left);
     left = std::max(-1.0, left);
 
-    // clamp right 
+    // clamp right
     right = std::min(1.0, right);
     right = std::max(-1.0, right);
 
@@ -127,7 +127,8 @@ void Node::imu_cb(const sensor_msgs::Imu::ConstPtr &msg)
     control_msg->controls[1] = throttle;
     control_msg->controls[2] = yaw_effort;
 
-    actuator_pub_.publish(control_msg);
+    if ((ros::Time::now() - last_setpoint_time_).toSec() < 0.5)
+      actuator_pub_.publish(control_msg);
   }
 }
 

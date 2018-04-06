@@ -15,13 +15,17 @@ class step_attitude(object):
         self.imu_set = False
         self.imu_q = None
 
-        self.step_size = 0.0 # deg
+        self.step_size = 5.0 # deg
         self.thrust = 0.0
 
         self.setpoint_pub = rospy.Publisher('/att_control/attitude_target', AttitudeTarget, queue_size=10)
 
     def imu_cb(self, data):
         q = [data.orientation.x, data.orientation.y, data.orientation.z, data.orientation.w]
+
+        if self.imu_set:
+            q = self.imu_q
+
         euler = euler_from_quaternion(q)
         q_step = quaternion_from_euler(0.0, 0.0, np.deg2rad(self.step_size))
 
