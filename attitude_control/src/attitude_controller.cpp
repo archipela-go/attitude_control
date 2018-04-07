@@ -5,6 +5,7 @@
 #include <kingfisher_msgs/Drive.h>
 #include <sensor_msgs/Imu.h>
 #include <tf/transform_datatypes.h>
+#include <math.h>
 
 using namespace std;
 
@@ -80,7 +81,7 @@ void Node::imu_cb(const sensor_msgs::Imu::ConstPtr &msg)
     ROS_INFO_STREAM("setpoint yaw: " << setpoint_yaw);
 
     // calculate control effort
-    double error = setpoint_yaw - imu_yaw;
+    double error = asin(sin(setpoint_yaw - imu_yaw));
     double d_error = (error - last_error_)/(ros::Time::now() - last_error_time_).toSec();
     double yaw_effort = 1.0 * error + 0.7 * d_error;
     last_error_ = error;

@@ -15,7 +15,7 @@ class step_attitude(object):
         self.imu_set = False
         self.imu_q = None
 
-        self.step_size = 5.0 # deg
+        self.step_size = 10.0 # deg
         self.thrust = 0.0
 
         self.setpoint_pub = rospy.Publisher('/att_control/attitude_target', AttitudeTarget, queue_size=10)
